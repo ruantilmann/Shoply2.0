@@ -7,7 +7,7 @@ import {
 const createUserSchema = {
   summary: 'Criar um novo usuário',
   description: 'Cria um novo usuário com email, senha e nome.',
-  tags: ['Usuários'],
+  tags: ['users'],
   body: {
     type: 'object',
     required: ['email', 'password', 'name'],
@@ -59,8 +59,6 @@ const createUserSchema = {
 export async function userRoutes(
     server: FastifyInstance,
     options: FastifyPluginOptions
-) {
-    server.post('/register', {
-        schema: createUserSchema
-    }, createUserController);
+) { 
+    server.post('/register', { schema: createUserSchema }, createUserController);
 }

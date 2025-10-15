@@ -65,7 +65,7 @@ Siga as instruções abaixo para configurar e executar o projeto em seu ambiente
 6. **Inicie o servidor de desenvolvimento:**
 
    ```bash
-   pnpm run start:dev
+   npx run start:dev
    ```
 
 O servidor estará disponível em `http://localhost:3000`.

@@ -2,55 +2,122 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import { userRoutes } from './routes/user.routes';
 import swagger from '@fastify/swagger';
-import swaggerUi from '@fastify/swagger-ui';
+import swaggerUI from '@fastify/swagger-ui';
 
-const server = Fastify({
+const fastify = Fastify({
     logger: {
         level: 'info'
     }
 })
 
+// Registrar CORS
+await fastify.register(cors, {
+    origin: true // Configurar conforme necessário
+});
+
+// Configurar Swagger
+await fastify.register(swagger, {
+  openapi: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Shoply BACKEND API',
+      //description: 'API',
+      version: '1.0.0',
+      contact: {
+        name: 'Ruan Carlos Tilmann',
+        email: 'ruan.tilmann@gmail.com'
+      },
+      license: {
+        name: 'MIT',
+        url: 'https://opensource.org/licenses/MIT'
+      }
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+        description: 'Servidor de desenvolvimento'
+      },
+      {
+        url: 'https://api.seudominio.com',
+        description: 'Servidor de produção'
+      }
+    ],
+    tags: [
+      { name: 'users', description: 'Gerenciamento de usuários' },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'Token JWT de autenticação'
+        },
+        apiKey: {
+          type: 'apiKey',
+          name: 'X-API-Key',
+          in: 'header'
+        }
+      }
+    }
+  }
+});
+
+// Configurar Swagger UI
+await fastify.register(swaggerUI, {
+  routePrefix: '/docs',
+  uiConfig: {
+    docExpansion: 'list',
+    deepLinking: true,
+    persistAuthorization: true,
+    displayRequestDuration: true,
+    filter: true,
+    tryItOutEnabled: true
+  },
+  uiHooks: {
+    onRequest: function (request, reply, next) { next() },
+    preHandler: function (request, reply, next) { next() }
+  },
+  staticCSP: true,
+  transformStaticCSP: (header) => header,
+  transformSpecification: (swaggerObject, request, reply) => { return swaggerObject },
+  transformSpecificationClone: true
+});
+
+// Health check simples
+fastify.get('/health', {
+  schema: {
+    description: 'Health check endpoint',
+    tags: ['health'],
+    response: {
+      200: {
+        type: 'object',
+        properties: {
+          status: { type: 'string', example: 'ok' },
+          timestamp: { type: 'string', format: 'date-time' }
+        }
+      }
+    }
+  }
+}, async (request, reply) => {
+  return {
+    status: 'ok',
+    timestamp: new Date().toISOString()
+  };
+});
+
+// Registrar rotas
+await fastify.register(userRoutes, { prefix: '/api/users' });
+
 async function start() {
     try {
-        // Registrar CORS
-        await server.register(cors, {
-            origin: true // Configurar conforme necessário
-        });
-
-        // Registrar rotas
-        await server.register(userRoutes, { prefix: '/api/users' });
-
-        // Registrar Swagger
-        await server.register(swagger, {
-            swagger: {
-                info: {
-                    title: 'Shoply 2.0 API',
-                    description: 'Documentação da API Shoply 2.0',
-                    version: '1.0.0'
-                },
-                host: 'localhost:3000',
-                schemes: ['http'],
-                consumes: ['application/json'],
-                produces: ['application/json']
-            }
-        });
-
-        await server.register(swaggerUi, {
-            routePrefix: '/documentation',
-            uiConfig: {
-                docExpansion: 'full',
-                deepLinking: false
-            },
-            staticCSP: true,
-            transformStaticCSP: (header) => header,
-        });
-
-
         // Inicializa o Servidor
-        await server.listen({ port: Number(process.env.PORT) })
-        console.log(`Server ON in PORT=${process.env.PORT}`)
+        await fastify.listen({ port: 3000, host: '0.0.0.0' });
+        console.log(`🚀 Servidor rodando em ${process.env.BETTER_AUTH_URL}`);
+        console.log(`📚 Documentação disponível em ${process.env.BETTER_AUTH_URL}/docs`);
     } catch (err) {
-        server.log.error(err)
+        fastify.log.error(err);
+        process.exit(1);
     }
 }
 
