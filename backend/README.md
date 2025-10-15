@@ -20,7 +20,7 @@ Siga as instruções abaixo para configurar e executar o projeto em seu ambiente
 ### Pré-requisitos
 
 - Node.js (versão 20.x ou superior)
-- pnpm (ou npm/yarn)
+- npm (ou pnpm/yarn)
 - Docker (opcional, para rodar o PostgreSQL)
 
 ### Instalação
@@ -28,7 +28,7 @@ Siga as instruções abaixo para configurar e executar o projeto em seu ambiente
 1. **Clone o repositório:**
 
    ```bash
-   git clone https://github.com/seu-usuario/shoply-2.0.git
+   git clone https://github.com/ruantilmann/shoply-2.0.git
    cd shoply-2.0/backend
    ```
 
@@ -45,13 +45,13 @@ Siga as instruções abaixo para configurar e executar o projeto em seu ambiente
    ```env
    DATABASE_URL="postgresql://{user}:{password}@{localhost}:5432/{database}?schema=public"
    BETTER_AUTH_SECRET="BETTER_AUTH_SECRET"
-   BETTER_AUTH_URL="http://localhost:${PORT}" # Base URL of your app
+   BETTER_AUTH_URL="http://localhost:${PORT}"
    PORT="3000"
    GOOGLE_CLIENT_ID="GOOGLE_CLIENT_ID"
    GOOGLE_CLIENT_SECRET="GOOGLE_CLIENT_SECRET"
    ```
 
-4. **Gerar prismaClient**
+4. **Gerar Prisma Client**
 
    ```bash
    npx prisma generate
@@ -74,7 +74,7 @@ O servidor estará disponível em `http://localhost:3000`.
 
 A documentação da API é gerada automaticamente com o Swagger e está disponível em:
 
-[http://localhost:3000/documentation](http://localhost:3000/documentation)
+[http://localhost:3000/docs](http://localhost:3000/docs)
 
 
 ## Endpoints da API
