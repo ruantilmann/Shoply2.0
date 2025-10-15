@@ -35,7 +35,7 @@ Siga as instruções abaixo para configurar e executar o projeto em seu ambiente
 2. **Instale as dependências:**
 
    ```bash
-   pnpm install
+   npm install
    ```
 
 3. **Configure as variáveis de ambiente:**
@@ -43,18 +43,26 @@ Siga as instruções abaixo para configurar e executar o projeto em seu ambiente
    Crie um arquivo `.env` na raiz do projeto e adicione as seguintes variáveis:
 
    ```env
-   DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
-   GOOGLE_CLIENT_ID="SEU_CLIENT_ID_DO_GOOGLE"
-   GOOGLE_CLIENT_SECRET="SEU_CLIENT_SECRET_DO_GOOGLE"
+   DATABASE_URL="postgresql://{user}:{password}@{localhost}:5432/{database}?schema=public"
+   BETTER_AUTH_SECRET="BETTER_AUTH_SECRET"
+   BETTER_AUTH_URL="http://localhost:${PORT}" # Base URL of your app
+   PORT="3000"
+   GOOGLE_CLIENT_ID="GOOGLE_CLIENT_ID"
+   GOOGLE_CLIENT_SECRET="GOOGLE_CLIENT_SECRET"
    ```
 
-4. **Execute as migrações do banco de dados:**
+4. **Gerar prismaClient**
 
    ```bash
-   pnpm prisma migrate dev
+   npx prisma generate
+   ```
+5. **Execute as migrações do banco de dados:**
+
+   ```bash
+   npx prisma migrate dev
    ```
 
-5. **Inicie o servidor de desenvolvimento:**
+6. **Inicie o servidor de desenvolvimento:**
 
    ```bash
    pnpm run start:dev
