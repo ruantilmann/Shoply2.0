@@ -5,14 +5,21 @@ import swagger from '@fastify/swagger';
 import swaggerUI from '@fastify/swagger-ui';
 
 const fastify = Fastify({
-    logger: {
-        level: 'info'
+  logger: {
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        translateTime: 'HH:MM:ss Z',
+        ignore: 'pid,hostname',
+        colorize: true
+      }
     }
+  }
 })
 
 // Registrar CORS
 await fastify.register(cors, {
-    origin: true // Configurar conforme necessário
+  origin: true // Configurar conforme necessário
 });
 
 // Configurar Swagger
@@ -110,15 +117,15 @@ fastify.get('/health', {
 await fastify.register(userRoutes, { prefix: '/api/users' });
 
 async function start() {
-    try {
-        // Inicializa o Servidor
-        await fastify.listen({ port: 3000, host: '0.0.0.0' });
-        console.log(`🚀 Servidor rodando em ${process.env.BETTER_AUTH_URL}`);
-        console.log(`📚 Documentação disponível em ${process.env.BETTER_AUTH_URL}/docs`);
-    } catch (err) {
-        fastify.log.error(err);
-        process.exit(1);
-    }
+  try {
+    // Inicializa o Servidor
+    await fastify.listen({ port: 3000, host: '0.0.0.0' });
+    console.log(`🚀 Servidor rodando em ${process.env.BETTER_AUTH_URL}`);
+    console.log(`📚 Documentação disponível em ${process.env.BETTER_AUTH_URL}/docs`);
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
 }
 
 start()
